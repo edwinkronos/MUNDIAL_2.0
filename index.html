@@ -8,57 +8,42 @@
 <meta property="og:site_name" content="HMMC">
 <meta name="twitter:card" content="summary_large_image">
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-
 <title>HMMC - Mundial 2026</title>
-
 <style>
-
 body{
-
     font-family:Arial,Helvetica,sans-serif;
     background:#ecf0f5;
     margin:20px;
-
 }
 
 #contenedor{
-
     width:80%;
     margin:auto;
     background:#ffffff;
     padding:20px;
     border-radius:10px;
     box-shadow:0 0 20px rgba(0,0,0,.2);
-
 }
 
 h1{
-
     text-align:center;
     margin-bottom:10px;
-
 }
 
 #marcador{
-
     text-align:center;
     font-size:55px;
     font-weight:bold;
     color:#176bdb;
     margin-bottom:10px;
-
 }
 
 #info{
-
     text-align:center;
     font-size:18px;
     margin-bottom:20px;
-
 }
 
 table{
@@ -69,272 +54,152 @@ table{
 }
 
 th{
-
     background:#215bb5;
     color:white;
     padding:10px;
-
 }
 
 td{
-
     padding:10px;
     text-align:center;
     border-bottom:1px solid #c0c0c0;
-
 }
 
 .ganador{
-
     background:#d1f0db;
     font-weight:bold;
-
 }
 
 #resumen{
-
     margin-top:20px;
     padding:12px;
-    background:#f7e28b;
+    background:#dfe4ea;
     border-radius:8px;
     text-align:center;
     font-size:18px;
-
 }
 
 </style>
-
 </head>
-
 <body>
 
 <div id="contenedor">
-
 <h1 id="titulo">
-
 Cargando...
-
 </h1>
-
 <div id="marcador">
-
 0 - 0
-
 </div>
-
 <div id="info">
-
 ...
-
 </div>
-
 <table>
-
 <thead>
-
 <tr>
-
 <th>#</th>
-
 <th>Nombre</th>
-
 <th>Monto</th>
-
 <th id="equipoLocal">
-
 Local
-
 </th>
-
 <th id="equipoVisitante">
-
 Visitante
-
 </th>
-
 </tr>
-
 </thead>
-
 <tbody id="tabla">
-
 </tbody>
-
 </table>
 
 <div id="resumen">
-
 Cargando datos...
-
 </div>
-
 </div>
-
 <script>
-
 const URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vStBZRZ3-ipmotg7jpeuZFDBF25McNMdQh_mz2ZUuj7rMBfVp0F9WbuCRPl7U69Hg/pub?output=csv&gid=1049860530&single=true";
-
 fetch(URL)
-
 .then(r=>r.text())
-
 .then(texto=>{
-
 const filas=texto.split(/\r?\n/).map(f=>f.split(","));
-
 const local=filas[0][1];
-
 const visita=filas[1][1];
-
 const golesLocal=Number(filas[2][1]);
-
 const golesVisita=Number(filas[3][1]);
-
 const fecha=filas[4][1];
-
 const hora=filas[5][1];
-
 const estado=filas[6][1];
-
 titulo.innerHTML=local+" vs "+visita;
-
 marcador.innerHTML=golesLocal+" - "+golesVisita;
-
 info.innerHTML=fecha+" | "+hora+" | "+estado;
-
 document.getElementById("equipoLocal").innerHTML=local;
-
 document.getElementById("equipoVisitante").innerHTML=visita;
-
 let inicio=filas.findIndex(f=>f[0]=="NOMBRE");
-
 let totalApostado=0;
-
 let cantidadGanadores=0;
-
 let participantes=0;
 for(let i=inicio+1;i<filas.length;i++){
-
     if(filas[i][0].trim()=="")
         continue;
-
     participantes++;
-
     let nombre = filas[i][0];
-
     let monto = Number(filas[i][1]) || 0;
-
     let apuestaLocal = Number(filas[i][2]);
-
     let apuestaVisita = Number(filas[i][3]);
-
     totalApostado += monto;
-
     let clase="";
-
     if(
         apuestaLocal===golesLocal &&
         apuestaVisita===golesVisita
     ){
-
         clase="ganador";
-
         cantidadGanadores++;
-
     }
 
     document.getElementById("tabla").innerHTML += `
-
 <tr class="${clase}">
-
 <td>
-
 ${participantes}
-
 </td>
-
 <td>
-
 ${nombre}
-
 </td>
-
 <td>
-
-<b>Bs ${monto.toFixed(2)}</b>
-
+<i>Bs ${monto.toFixed(2)}</i>
 </td>
-
 <td>
-
 <b>${apuestaLocal}</b>
-
 </td>
-
 <td>
-
 <b>${apuestaVisita}</b>
-
 </td>
-
 </tr>
-
 `;
-
 }
-
 let premioPorGanador = 0;
-
 if(cantidadGanadores>0){
-
     premioPorGanador = totalApostado / cantidadGanadores;
-
 }
 document.getElementById("resumen").innerHTML = `
-
 <b># Participantes:</b> ${participantes}
-
 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-
 <b>💰 Total Acumulado:</b> Bs ${totalApostado.toFixed(2)}
-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
-
 <BR><b>🏆 Ganadores:</b> ${cantidadGanadores}
-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
 <BR><b>🎁 Premio por ganador:</b> Bs ${premioPorGanador.toFixed(2)}
-
 `;
-
 })
-
 .catch(error=>{
-
 document.getElementById("contenedor").innerHTML=`
-
 <h2 style="color:red;text-align:center;">
-
 Error leyendo Google Sheets
-
 </h2>
-
 <p style="text-align:center;">
-
 ${error}
-
 </p>
-
 `;
-
 });
-
-</script>
-
-</body>
-
-</html>
+</script></body></html>
 
 
     
